@@ -2,25 +2,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 
-# Open the input text file
+# Відкрийття вхідного текстового файлу
 with open('input.txt') as f:
-    # Read the first line which defines the window size for moving average
+    # Прочитання першого рядока, який визначає розмір вікна для ковзного середнього
     Oser = float(f.readline().strip().replace(',', '.'))
 
-    # Check that Oser is greater than zero
+    # Переконатися, що Oser більше нуля
     if Oser <= 0:
         print("Window size must be greater than zero.")
         exit()
 
-    # Read all the rest of the data into a list
+    # Прочити всі інші дані в списку
     List_data = [float(line.strip().replace(',', '.')) for line in f.readlines()]
 
-# Initialize lists for storing smoothed data and differences
+# Ініціалізація списків для зберігання згладжених даних і відмінностей
 List_oseredn = []
 List_minus = []
 List_copia = []
 
-# Calculate the moving average of the data
+# Обчислення ковзного середнього даних
 for i in range(int(Oser // 2), len(List_data) - int(Oser // 2)):
     window_sum = 0
     for j in range(-int(Oser // 2), int(Oser // 2) + 1):
@@ -30,7 +30,7 @@ for i in range(int(Oser // 2), len(List_data) - int(Oser // 2)):
     List_copia.append(List_data[i])
     List_minus.append(List_data[i] - smoothed)
 
-# Plot the raw data, smoothed data, and difference
+# Побудудова необроблених даних, згладжені дані та різниця
 x = np.arange(len(List_oseredn))
 plt.plot(x, List_data[int(Oser // 2):len(List_data) - int(Oser // 2)], label='Raw Data')
 plt.plot(x, List_oseredn, label='Smoothed Data')
@@ -41,6 +41,7 @@ plt.plot(x, List_minus, label='Difference')
 plt.legend()
 plt.show()
 
+# Збереження згладжених даних у файлі CSV
 with open("smoothed_data.csv", "w", newline="") as file:
     writer = csv.writer(file)
     for i, value in enumerate(List_oseredn):
