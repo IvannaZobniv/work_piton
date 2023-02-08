@@ -1,66 +1,41 @@
+import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as pit
 
-# # Load the data from the text file into a pandas dataframe
-# df = pd.read_csv('input.txt', sep='\t', header=None)
-#
-# # Perform Kalman filtering on the data using the KalmanFilter class from the PyKalman library
-# from pykalman import KalmanFilter
-# kf = KalmanFilter(transition_matrices=np.array([[1, 1], [0, 1]]), observation_matrices=np.array([[1, 0]]))
-# (smoothed_state_means, smoothed_state_covariances) = kf.smooth(df.values)
-#
-# # Save the result to a CSV file
-# result = pd.DataFrame(smoothed_state_means, columns=['x', 'y'])
-# result.to_csv('output.csv', index=False)
+# Open the input text file
+with open('input.txt') as f:
+    # Read the first line which defines the window size for moving average
+    Oser = float(f.readline().strip().replace(',', '.'))
 
+    # Check that Oser is greater than zero
+    if Oser <= 0:
+        print("Window size must be greater than zero.")
+        exit()
 
-# Load the data from the text file into a pandas dataframe
-df = pd.read_csv('input.txt', sep='\t', header=None)
+    # Read all the rest of the data into a list
+    List_data = [float(line.strip().replace(',', '.')) for line in f.readlines()]
 
-# Define the state transition matrix
-F = np.array([[1, 1], [0, 1]])
+# Initialize lists for storing smoothed data and differences
+List_oseredn = []
+List_minus = []
+List_copia = []
 
-# Define the observation matrix
-H = np.array([[1, 0]])
+# Calculate the moving average of the data
+for i in range(int(Oser // 2), len(List_data) - int(Oser // 2)):
+    window_sum = 0
+    for j in range(-int(Oser // 2), int(Oser // 2) + 1):
+        window_sum += List_data[i + j]
+    smoothed = window_sum / Oser
+    List_oseredn.append(smoothed)
+    List_copia.append(List_data[i])
+    List_minus.append(List_data[i] - smoothed)
 
-# Define the process noise covariance matrix
-Q = np.array([[0.0001, 0.0], [0.0, 0.0001]])
+# Plot the raw data, smoothed data, and difference
+x = np.arange(len(List_oseredn))
+plt.plot(x, List_data[int(Oser // 2):len(List_data) - int(Oser // 2)], label='Raw Data')
+plt.plot(x, List_oseredn, label='Smoothed Data')
+plt.legend()
+plt.show()
 
-# Define the measurement noise covariance matrix
-R = np.array([[0.1]])
-
-# Define the initial state estimate
-x_estimate = np.array([[0.0, 0.0]]).T
-
-# Define the initial state covariance matrix
-P = np.array([[10.0, 0.0], [0.0, 10.0]])
-
-# Define the number of observations
-num_observations = df.shape[0]
-
-# Initialize the smoothed state estimate
-smoothed_state_estimate = np.zeros((num_observations, 2))
-
-# Store the first estimate as the first smoothed state estimate
-smoothed_state_estimate[0, :] = x_estimate.flatten()
-
-# Loop over each observation (starting from the second one)
-for t in range(1, num_observations):
-    # Predict the next state estimate
-    x_predict = F @ x_estimate
-    P_predict = F @ P @ F.T + Q
-
-    # Compute the Kalman gain
-    K = P_predict @ H.T / (H @ P_predict @ H.T + R)
-
-    # Update the state estimate
-    x_estimate = x_predict + K * (df.iloc[t, 0] - H @ x_predict)
-    P = (np.eye(2) - K @ H) @ P_predict
-
-    # Store the smoothed state estimate
-    smoothed_state_estimate[t, :] = x_estimate.flatten()
-
-# Save the result to a CSV file
-result = pd.DataFrame(smoothed_state_estimate, columns=['x', 'y'])
-result.to_csv('output.csv', index=False)
+plt.plot(x, List_minus, label='Difference')
+plt.legend()
+plt.show()
