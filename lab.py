@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 
 # Open the input text file
 with open('input.txt') as f:
@@ -39,3 +40,8 @@ plt.show()
 plt.plot(x, List_minus, label='Difference')
 plt.legend()
 plt.show()
+
+with open("smoothed_data.csv", "w", newline="") as file:
+    writer = csv.writer(file)
+    for i, value in enumerate(List_oseredn):
+        writer.writerow([i, value])
