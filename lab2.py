@@ -10,24 +10,24 @@ List_oseredn = []
 List_minus = []
 List_copia = []
 
-i = int((Oser + 1) / 2) # Mark the first element for smoothing
+i = int((Oser + 1) / 2) # Позначтити перший елемент для згладжування
 p = i
 delta = i - 1
 
-# Smoothing by values of elements
+# Згладжування за значеннями елементів
 while i < len(List_data) - p:
     left = i - delta
     Summa = 0
     u = 1
 
-    # Sum within the smoothing window
+    # Сума в межах вікна згладжування
     while u < Oser+1:
         Summa = Summa + List_data[left + u - 1]
         u = u + 1
 
-    List_oseredn.append(Summa / Oser) # Add the smoothed value to the list
-    List_copia.append(List_data[i]) # Make a copy
-    List_minus.append(List_data[i] - Summa / Oser) # Add the difference to the list
+    List_oseredn.append(Summa / Oser) # Додавання згладженого значення до списку
+    List_copia.append(List_data[i]) # копія
+    List_minus.append(List_data[i] - Summa / Oser) # Додавання різниці до списку
     i = i + 1
 
 x = np.arange(1, i-delta, 1)
