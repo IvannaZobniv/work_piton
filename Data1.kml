@@ -1,0 +1,13 @@
+<Document>
+  <name>MagField</name>
+  <open>1</open>
+  <Style id="magfield">
+    <LineStyle>
+      <color>7f00ffff</color>
+      <width>2</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>7f00ffff</color>
+    </PolyStyle>
+  </Style>
+</Document>
