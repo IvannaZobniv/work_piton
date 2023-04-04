@@ -15,7 +15,7 @@ S = 5570360  # Широта
 def process_magnetic_data(file_path):
     min_val = 10000000
     max_val = 10
-    count = -1
+    count = 1
     a1, b1, c1 = [], [], []
 
     with open(file_path, 'r') as f:
